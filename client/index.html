@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cliente</title>
+</head>
+<style>
+body {
+    background: black;
+    font-family: sans-serif;
+}
+#container {
+    background: white;
+    max-width: 400px;
+    min-height: 500px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    margin: 0 auto;
+    padding: .5rem;
+    background-image: linear-gradient(0, navy, aquamarine);
+    background-size: contain;
+    background-attachment: fixed;
+}
+output {
+    height: 460px;
+    padding-right: .5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+#input-container {
+    clear: both;
+    display: flex;
+    justify-content: stretch;
+}
+input {
+    height: 40px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    flex-grow: 1;
+    outline: none;
+    padding: 0 .5rem;
+}
+#send-button {
+    background: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+img {
+    cursor: pointer;
+    width: 100%;
+}
+span {
+    background: #fff;
+    border-radius: 10px;
+    margin: .2rem 0;
+    padding: .2rem .5rem;
+}
+.eu {
+    margin-left: auto;
+}
+</style>
+<body>
+
+<div id="container">
+    <output></output>
+
+    <div id="input-container">
+        <input type="text">
+        <div id="send-button">
+            <img src="https://static.thenounproject.com/png/373675-200.png" alt="Enviar">
+        </div>
+    </div>
+</div>
+
+<script src="js/autobahn.js"></script>
+<script>
+    const input = document.querySelector('input');
+    const output = document.querySelector('output');
+    const img = document.querySelector('img');
+
+    const ws = new WebSocket('ws://localhost:8080/teste');
+
+    ws.addEventListener('message', msg => {
+        const span = document.createElement('span');
+        span.classList.add('zoto');
+        span.textContent = msg.data;
+
+        output.appendChild(span);
+    });
+
+    img.addEventListener('click', function () {
+        ws.send(input.value);
+        const span = document.createElement('span');
+        span.classList.add('eu');
+        span.textContent = input.value;
+
+        output.appendChild(span);
+        output.scrollTop = output.scrollHeight;
+
+        input.value = '';
+    });
+
+    input.addEventListener('keypress', e => e.key === 'Enter' && img.dispatchEvent(new Event('click')));
+</script>
+</body>
+</html>
